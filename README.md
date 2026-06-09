@@ -1,21 +1,34 @@
 # debugthis
 
-`debugthis` is a small Python helper for inspecting variables at the call site.
-Call `this()` inside your code and it returns a formatted table showing matching
-local and global variables, their types, the probe expression that was run, and
-the probe result.
+`debugthis` is a simple Python way for inspecting variables at the call site. Just use `showthis.py` file to do that.
 
 ## Quick Start
 
 ```python
+import polars as pl
+
 from showthis import this
+
+def my_func(df: pl.DataFrame) -> int:
+    return len(df.filter(pl.col("a") > 10))
 
 
 def main():
-    user = "Ada"
-    scores = [10, 20, 30]
+    df = pl.DataFrame({"a": [1, 2, 30]})
 
-    print(this({len: [str, list]}, name_pattern=r"user|scores", colors=False))
+    a1 = "Hello folks"
+
+    print(
+        this(
+            f_map={my_func: [pl.DataFrame, str], str: [str]},
+            name_pattern=r"[a-z]{2}",
+            colors=False,
+        )
+    )
+
+    a1 += ". How are you?"
+
+    print(this(f_map={str: [str]}, name_pattern=r"\w{2}", colors=False))
 
 
 if __name__ == "__main__":
@@ -25,10 +38,15 @@ if __name__ == "__main__":
 Example output:
 
 ```text
-This #1: main.py:8 | <module> -> main
----------------------------------------
-local  scores  list  len(scores) = 3
-local  user    str   len(user)   = 3
+This #1: main.py:16 | <module> -> main
+──────────────────────────────────────
+local  df  DataFrame  my_func(df) = 1
+──────────────────────────────────────
+
+This #2: main.py:25 | <module> -> main
+─────────────────────────────────────────────────────
+local  a1  str  str(a1) = 'Hello folks. How are you?'
+─────────────────────────────────────────────────────
 ```
 
 ## API
@@ -82,11 +100,7 @@ uv run main.py
 Run tests:
 
 ```bash
-.venv/bin/pytest -q
-```
-
-Or, if you use `uv` to manage the environment:
-
-```bash
 uv run pytest -q
 ```
+## NOTE
+THIS IS 80-20 PROJECT, THAT MEAN TO KEEP IT SIMPLE FOR MOST PEOPLE, MANY FEATURES WILL BE REJECT.
