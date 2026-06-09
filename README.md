@@ -1,8 +1,9 @@
-# Overview
+# debugthis
 
 A simple Python helper for inspecting variables at the call site.
 
-**Use `showthis.py` directly in the project you are debugging, ZERO DEPENDENCIES.**
+Use `showthis.py` directly in the project you are debugging. The helper itself
+has no runtime dependencies.
 
 ## Quick Start
 
@@ -63,8 +64,8 @@ this(name_pattern=r"sample_.*")  # matches sample_text
 this(name_pattern=r"sample_")    # does not match sample_text
 ```
 
-Use `colors=False` for logs or tests. Use `truncate=False` or `truncate=None`
-to disable result truncation.
+Use `colors=False` for logs or tests. Use `truncate=None` to disable result
+truncation.
 
 ## API
 

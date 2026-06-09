@@ -229,7 +229,7 @@ def _truncate_text(text: str, max_len: Optional[int]) -> str:
 def _pretty(
     value: object,
     *,
-    truncate: Union[bool, int, None] = 100,
+    truncate: Optional[int] = 100,
 ) -> str:
     """Format *value* as a compact single-line string, optionally truncated."""
     text = pformat(
@@ -239,7 +239,7 @@ def _pretty(
         sort_dicts=False,
     ).replace("\n", " ")
 
-    if truncate is False or truncate is None:
+    if truncate is None:
         return text
 
     max_len = 100 if truncate is True else int(truncate)
@@ -273,7 +273,7 @@ def this(
     name_pattern: str = r".*",
     *,
     colors: bool = True,
-    truncate: int = 50,
+    truncate: Optional[int] = 50,
 ) -> str:
     """Snapshot local/global variables at the call site and return a formatted table.
 
@@ -311,12 +311,10 @@ def this(
         else:
             exc = result.error
             result_str = f"Err({type(exc).__name__}: {exc})"
-            max_len = 50 if truncate is True else truncate
-            result_str = _truncate_text(
-                result_str,
-                max_len
-                if isinstance(max_len, int) and not isinstance(max_len, bool)
-                else None,
+            result_str = (
+                _truncate_text(result_str, max_len=truncate)
+                if truncate is not None
+                else result_str
             )
             is_err = True
 
