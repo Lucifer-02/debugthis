@@ -1,8 +1,8 @@
 # Overview
 
-A small Python helper for inspecting variables at the call site.
+A simple Python helper for inspecting variables at the call site.
 
-**Use `showthis.py` directly in the project you are debugging.**
+**Use `showthis.py` directly in the project you are debugging, ZERO DEPENDENCIES.**
 
 ## Quick Start
 
