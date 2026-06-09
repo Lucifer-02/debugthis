@@ -1,0 +1,10 @@
+[project]
+name = "debugthis"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "polars>=1.36.1",
+    "pytest>=8.4.2",
+]
