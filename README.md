@@ -1,7 +1,8 @@
 # Overview
 
 A small Python helper for inspecting variables at the call site.
-Use `showthis.py` directly in the project you are debugging.
+
+**Use `showthis.py` directly in the project you are debugging.**
 
 ## Quick Start
 
@@ -108,5 +109,4 @@ uv run pytest -q
 
 ## Note
 
-This is an 80/20 project. To keep it simple for most people, many feature
-requests will be rejected.
+**THIS IS AN 80/20 PROJECT. TO KEEP IT SIMPLE FOR MOST PEOPLE, MANY FEATURE REQUESTS WILL BE REJECTED.**
