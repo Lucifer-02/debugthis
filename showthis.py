@@ -242,9 +242,7 @@ def _pretty(
     if truncate is None:
         return text
 
-    max_len = 100 if truncate is True else int(truncate)
-
-    return _truncate_text(text, max_len)
+    return _truncate_text(text, max_len=truncate)
 
 
 def _func_name(func: object) -> str:
