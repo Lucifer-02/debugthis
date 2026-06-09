@@ -1,6 +1,7 @@
 # debugthis
 
-`debugthis` is a simple Python way for inspecting variables at the call site. Just use `showthis.py` file to do that.
+`debugthis` is a small Python helper for inspecting variables at the call site.
+Use `showthis.py` directly in the project you are debugging.
 
 ## Quick Start
 
@@ -49,7 +50,7 @@ local  a1  str  str(a1) = 'Hello folks. How are you?'
 ─────────────────────────────────────────────────────
 ```
 
-## API
+## Display Helper
 
 ```python
 this(
@@ -61,7 +62,7 @@ this(
 )
 ```
 
-`f_map` maps probe functions to accepted types:
+The `f_map` argument maps probe functions to accepted types:
 
 ```python
 print(this({len: [list, str], str: [object]}))
@@ -81,13 +82,74 @@ this(name_pattern=r"sample_")    # does not match sample_text
 
 `truncate` controls result width:
 
-- `50`: default maximum result length.
-- `False` or `None`: do not truncate.
-- `True`: use the default truncation width.
-- any integer: truncate to that many characters.
+- `50`: default maximum result length
+- `False` or `None`: do not truncate
+- `True`: use the default truncation width
+- any integer: truncate to that many characters
 
 Probe exceptions are captured and displayed as `Err(...)` instead of being
 raised.
+
+## API
+
+Use `inspect_this()` when you want structured data instead of a formatted string.
+It takes an explicit Python frame and returns a `ThisVars` object.
+
+```python
+import sys
+from typing import Any
+
+from showthis import inspect_this
+
+
+result = inspect_this(
+    frame=sys._getframe(),
+    f_map={str: [Any]},
+    name_pattern=r".*",
+)
+```
+
+Signature:
+
+```python
+inspect_this(
+    frame,
+    f_map=None,
+    name_pattern=r".*",
+)
+```
+
+Arguments:
+
+- `frame`: the frame to inspect, usually from `sys._getframe()`
+- `f_map`: a mapping of `{probe_function: [accepted_types]}`
+- `name_pattern`: a regular expression matched against the full variable name
+
+If `f_map` is omitted, `inspect_this()` uses `{str: [Any]}`.
+
+Return value:
+
+```python
+ThisVars(
+    lineno=int,
+    filename=Path,
+    call_stack=list[str],
+    combos=list[Combo],
+)
+```
+
+Each `Combo` contains:
+
+- `var`: a `HereVar` with `var_name`, `var_type`, `var_value`, and `scope`
+- `func`: the probe function that was called
+- `result`: a `Result` object
+
+`Result` is a small success/error wrapper:
+
+- `Result.ok == True`: read the probe output from `Result.value`
+- `Result.ok == False`: read the captured exception from `Result.error`
+
+Scopes are represented by `Scope.LOCAL` and `Scope.GLOBAL`.
 
 ## Development
 
@@ -102,5 +164,8 @@ Run tests:
 ```bash
 uv run pytest -q
 ```
-## NOTE
-THIS IS 80-20 PROJECT, THAT MEAN TO KEEP IT SIMPLE FOR MOST PEOPLE, MANY FEATURES WILL BE REJECT.
+
+## Note
+
+This is an 80/20 project. To keep it simple for most people, many feature
+requests will be rejected.

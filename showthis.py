@@ -118,6 +118,7 @@ def _call(func: Callable[[Any], Any], value: Any) -> Result:
         return Result.Err(exc)
 
 
+# ================================= API =================================
 def inspect_this(
     frame: FrameType,
     f_map: Optional[FuncMap] = None,
@@ -166,7 +167,7 @@ def inspect_this(
     )
 
 
-# =================== API =========================
+# =================== IMPLEMENT =========================
 
 
 RST = "\033[0m"
