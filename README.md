@@ -7,7 +7,7 @@ A simple Python helper for inspecting variables at the call site.
 ## Quick Start
 
 ```python
-import polars as pl
+import polars as pl # just for this example
 
 from showthis import this
 
