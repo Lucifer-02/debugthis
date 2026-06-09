@@ -1,6 +1,6 @@
-# debugthis
+# Overview
 
-`debugthis` is a small Python helper for inspecting variables at the call site.
+A small Python helper for inspecting variables at the call site.
 Use `showthis.py` directly in the project you are debugging.
 
 ## Quick Start
@@ -50,50 +50,30 @@ local  a1  str  str(a1) = 'Hello folks. How are you?'
 ─────────────────────────────────────────────────────
 ```
 
-## Display Helper
+## Usage
+
+`this()` returns a formatted table from the call site.
 
 ```python
-this(
-    f_map=None,
-    name_pattern=r".*",
-    *,
-    colors=True,
-    truncate=50,
-)
+print(this({len: [list, str]}, name_pattern=r"items|label", colors=False))
 ```
 
-The `f_map` argument maps probe functions to accepted types:
+`f_map` maps probe functions to accepted types. If omitted, `str()` is applied
+to every matching variable.
 
-```python
-print(this({len: [list, str], str: [object]}))
-```
-
-If `f_map` is omitted, `str()` is applied to every matching variable.
-
-`name_pattern` is a regular expression matched against the full variable name.
-For prefix matches, include `.*` yourself:
+`name_pattern` uses full regex matching:
 
 ```python
 this(name_pattern=r"sample_.*")  # matches sample_text
 this(name_pattern=r"sample_")    # does not match sample_text
 ```
 
-`colors=False` disables ANSI color codes, which is useful for logs and tests.
-
-`truncate` controls result width:
-
-- `50`: default maximum result length
-- `False` or `None`: do not truncate
-- `True`: use the default truncation width
-- any integer: truncate to that many characters
-
-Probe exceptions are captured and displayed as `Err(...)` instead of being
-raised.
+Use `colors=False` for logs or tests. Use `truncate=False` or `truncate=None`
+to disable result truncation.
 
 ## API
 
-Use `inspect_this()` when you want structured data instead of a formatted string.
-It takes an explicit Python frame and returns a `ThisVars` object.
+Use `inspect_this()` for structured data instead of formatted text.
 
 ```python
 import sys
@@ -109,47 +89,8 @@ result = inspect_this(
 )
 ```
 
-Signature:
-
-```python
-inspect_this(
-    frame,
-    f_map=None,
-    name_pattern=r".*",
-)
-```
-
-Arguments:
-
-- `frame`: the frame to inspect, usually from `sys._getframe()`
-- `f_map`: a mapping of `{probe_function: [accepted_types]}`
-- `name_pattern`: a regular expression matched against the full variable name
-
-If `f_map` is omitted, `inspect_this()` uses `{str: [Any]}`.
-
-Return value:
-
-```python
-ThisVars(
-    lineno=int,
-    filename=Path,
-    call_stack=list[str],
-    combos=list[Combo],
-)
-```
-
-Each `Combo` contains:
-
-- `var`: a `HereVar` with `var_name`, `var_type`, `var_value`, and `scope`
-- `func`: the probe function that was called
-- `result`: a `Result` object
-
-`Result` is a small success/error wrapper:
-
-- `Result.ok == True`: read the probe output from `Result.value`
-- `Result.ok == False`: read the captured exception from `Result.error`
-
-Scopes are represented by `Scope.LOCAL` and `Scope.GLOBAL`.
+It returns `ThisVars`, which contains source location, call stack, and probe
+results. Probe exceptions are captured in `Result.error`.
 
 ## Development
 
